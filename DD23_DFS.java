@@ -2,7 +2,7 @@ package ds;
 
 import java.util.*;
 
-public class DD21_DFS {
+public class DD23_DFS {
 
 	// Manual Graph + DFS using recursion
 	private static class GraphManual {

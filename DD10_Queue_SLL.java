@@ -7,92 +7,118 @@ import java.util.Queue;
 
 public class DD10_Queue_SLL {
 
-    // Manual SLL-based Queue
-    private static class SLLQueue {
-        private static class Node {
-            int data;
-            Node next;
-            Node(int data) { this.data = data; }
-        }
+	// === Manual SLL-based Queue ===
+	private static class SLLQueue {
+		private static class Node {
+			int data;
+			Node next;
 
-        private Node head;  // points to front
-        private Node tail;  // points to rear
-        private int size;
+			Node(int data) {
+				this.data = data;
+			}
+		}
 
-        public void enqueue(int data) {
-            Node newNode = new Node(data);
-            if (tail == null) {
-                head = tail = newNode;
-            } else {
-                tail.next = newNode;
-                tail = newNode;
-            }
-            size++;
-        }
+		private Node front; // same as 'head'
+		private Node rear; // same as 'tail'
+		private int size;
 
-        public int dequeue() {
-            if (isEmpty()) throw new IllegalStateException("Queue underflow");
-            int value = head.data;
-            head = head.next;
-            if (head == null) tail = null;
-            size--;
-            return value;
-        }
+		public void enqueue(int data) {
+			Node newNode = new Node(data);
+			if (rear == null) {
+				front = rear = newNode;
+			} else {
+				rear.next = newNode;
+				rear = newNode;
+			}
+			size++;
+		}
 
-        public int peek() {
-            if (isEmpty()) throw new IllegalStateException("Queue is empty");
-            return head.data;
-        }
+		public int dequeue() {
+			if (isEmpty())
+				throw new IllegalStateException("Queue underflow");
+			int value = front.data;
+			front = front.next;
+			if (front == null)
+				rear = null;
+			size--;
+			return value;
+		}
 
-        public boolean isEmpty() {
-            return head == null;
-        }
+		public int peek() {
+			if (isEmpty())
+				throw new IllegalStateException("Queue is empty");
+			return front.data;
+		}
 
-        public int size() {
-            return size;
-        }
-    }
+		public boolean isEmpty() {
+			return front == null;
+		}
 
-    public static void main(String[] args) {
-        // --- Manual SLLQueue ---
-        SLLQueue manual = new SLLQueue();
-        manual.enqueue(10);
-        manual.enqueue(20);
-        manual.enqueue(30);
-        System.out.println("Manual SLLQueue size: " + manual.size());
-        System.out.println("Manual front: " + manual.peek());
-        System.out.print("Manual dequeue sequence: ");
-        while (!manual.isEmpty()) {
-            System.out.print(manual.dequeue() + " ");
-        }
-        System.out.println("\nManual isEmpty: " + manual.isEmpty());
+		public int size() {
+			return size;
+		}
 
-        // --- Built-in Queue via LinkedList ---
-        Queue<Integer> linkedQueue = new LinkedList<>();
-        linkedQueue.offer(100);
-        linkedQueue.offer(200);
-        linkedQueue.offer(300);
-        System.out.println("\nLinkedList Queue poll: " + linkedQueue.poll());
-        System.out.println("LinkedList Queue peek: " + linkedQueue.peek());
-        System.out.println("LinkedList Queue size: " + linkedQueue.size());
+		public void display() {
+			if (isEmpty()) {
+				System.out.println("SLL Queue is empty");
+				return;
+			}
+			System.out.print("SLL Queue elements: ");
+			Node current = front;
+			while (current != null) {
+				System.out.print(current.data + " ");
+				current = current.next;
+			}
+			System.out.println();
+		}
+	}
 
-        // --- Built-in ArrayDeque as Queue (recommended) ---
-        Deque<Integer> dequeQueue = new ArrayDeque<>();
-        dequeQueue.offer(1000);
-        dequeQueue.offer(2000);
-        dequeQueue.offer(3000);
-        System.out.println("\nArrayDeque Queue poll: " + dequeQueue.poll());
-        System.out.println("ArrayDeque Queue peek: " + dequeQueue.peek());
-        System.out.println("ArrayDeque Queue size: " + dequeQueue.size());
-        
-        // --- Built-in LinkedList as Queue ---
-        LinkedList<Integer> builtQueue = new LinkedList<>();
-        builtQueue.offer(10000);
-        builtQueue.offer(20000);
-        builtQueue.offer(30000);
-        System.out.println("\nLinkedList Queue poll: " + builtQueue.poll());
-        System.out.println("LinkedList Queue peek: " + builtQueue.peek());
-        System.out.println("LinkedList Queue size: " + builtQueue.size());
-        
-    }
+	// === Main Function ===
+	public static void main(String[] args) {
+
+		// --- Manual SLLQueue ---
+		SLLQueue manual = new SLLQueue();
+		manual.enqueue(10);
+		manual.enqueue(20);
+		manual.enqueue(30);
+		manual.display();
+		System.out.println("Manual SLLQueue size: " + manual.size());
+		System.out.println("Manual front: " + manual.peek());
+
+		System.out.print("Manual dequeue sequence: ");
+		while (!manual.isEmpty()) {
+			System.out.print(manual.dequeue() + " ");
+		}
+		System.out.println("\nManual isEmpty: " + manual.isEmpty());
+
+		// --- Built-in Queue via LinkedList ---
+		Queue<Integer> linkedQueue = new LinkedList<>();
+		linkedQueue.offer(100);
+		linkedQueue.offer(200);
+		linkedQueue.offer(300);
+		System.out.println("\nLinkedList Queue Elements: " + linkedQueue);
+		System.out.println("LinkedList Queue poll: " + linkedQueue.poll());
+		System.out.println("LinkedList Queue peek: " + linkedQueue.peek());
+		System.out.println("LinkedList Queue size: " + linkedQueue.size());
+
+		// --- Built-in Queue via ArrayDeque ---
+		Deque<Integer> dequeQueue = new ArrayDeque<>();
+		dequeQueue.offer(1000);
+		dequeQueue.offer(2000);
+		dequeQueue.offer(3000);
+		System.out.println("\nArrayDeque Queue Elements: " + dequeQueue);
+		System.out.println("ArrayDeque Queue poll: " + dequeQueue.poll());
+		System.out.println("ArrayDeque Queue peek: " + dequeQueue.peek());
+		System.out.println("ArrayDeque Queue size: " + dequeQueue.size());
+
+		// --- LinkedList as Queue (again for clarity) ---
+		LinkedList<Integer> builtQueue = new LinkedList<>();
+		builtQueue.offer(10000);
+		builtQueue.offer(20000);
+		builtQueue.offer(30000);
+		System.out.println("\nLinkedList (again) Queue Elements: " + builtQueue);
+		System.out.println("LinkedList poll: " + builtQueue.poll());
+		System.out.println("LinkedList peek: " + builtQueue.peek());
+		System.out.println("LinkedList size: " + builtQueue.size());
+	}
 }

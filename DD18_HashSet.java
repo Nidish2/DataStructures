@@ -3,114 +3,130 @@ package ds;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.TreeSet;
-import java.util.Iterator;
 
 public class DD18_HashSet {
 
-    // Manual HashSet using separate chaining
-    private static class MyHashSet {
-        private static class Node {
-            int key;
-            Node next;
-            Node(int key) { this.key = key; }
-        }
+	// Manual Implementation of HashSet using Separate Chaining
+	private static class CustomHashSet {
+		private static class Node {
+			int key;
+			Node next;
 
-        private Node[] buckets;
-        private int capacity;
-        private int size;
+			Node(int key) {
+				this.key = key;
+			}
+		}
 
-        public MyHashSet(int capacity) {
-            this.capacity = capacity;
-            this.buckets = new Node[capacity];
-            this.size = 0;
-        }
+		private Node[] bucketArray;
+		private int capacity;
+		private int currentSize;
 
-        private int hash(int key) {
-            return Math.abs(key) % capacity;
-        }
+		public CustomHashSet(int capacity) {
+			this.capacity = capacity;
+			this.bucketArray = new Node[capacity];
+			this.currentSize = 0;
+		}
 
-        public void add(int key) {
-            int idx = hash(key);
-            Node curr = buckets[idx];
-            while (curr != null) {
-                if (curr.key == key) return; // already present
-                curr = curr.next;
-            }
-            Node newNode = new Node(key);
-            newNode.next = buckets[idx];
-            buckets[idx] = newNode;
-            size++;
-        }
+		private int getBucketIndex(int key) {
+			return Math.abs(key) % capacity;
+		}
 
-        public boolean contains(int key) {
-            int idx = hash(key);
-            Node curr = buckets[idx];
-            while (curr != null) {
-                if (curr.key == key) return true;
-                curr = curr.next;
-            }
-            return false;
-        }
+		public void add(int key) {
+			int idx = getBucketIndex(key);
+			Node head = bucketArray[idx];
 
-        public void remove(int key) {
-            int idx = hash(key);
-            Node curr = buckets[idx], prev = null;
-            while (curr != null) {
-                if (curr.key == key) {
-                    if (prev == null) buckets[idx] = curr.next;
-                    else prev.next = curr.next;
-                    size--;
-                    return;
-                }
-                prev = curr;
-                curr = curr.next;
-            }
-        }
+			while (head != null) {
+				if (head.key == key)
+					return; // key already exists
+				head = head.next;
+			}
 
-        public int size() {
-            return size;
-        }
-    }
+			Node newNode = new Node(key);
+			newNode.next = bucketArray[idx];
+			bucketArray[idx] = newNode;
+			currentSize++;
+		}
 
-    public static void main(String[] args) {
-        // --- Manual MyHashSet ---
-        MyHashSet manual = new MyHashSet(10);
-        manual.add(5);
-        manual.add(15);
-        manual.add(25);
-        System.out.println("Manual set size: " + manual.size());
-        System.out.println("Contains 15? " + manual.contains(15));
-        System.out.println("Contains 99? " + manual.contains(99));
-        manual.remove(15);
-        System.out.println("After remove 15, contains 15? " + manual.contains(15));
-        System.out.println("Manual set size: " + manual.size());
+		public boolean contains(int key) {
+			int idx = getBucketIndex(key);
+			Node current = bucketArray[idx];
 
-        // --- Built-in HashSet ---
-        HashSet<Integer> hashSet = new HashSet<>();
-        hashSet.add(5);
-        hashSet.add(15);
-        hashSet.add(25);
-        System.out.println("\nHashSet: " + hashSet);
-        System.out.println("HashSet contains 25? " + hashSet.contains(25));
-        hashSet.remove(15);
-        System.out.println("After remove 15: " + hashSet);
+			while (current != null) {
+				if (current.key == key)
+					return true;
+				current = current.next;
+			}
 
-        // --- Built-in LinkedHashSet (insertion order) ---
-        LinkedHashSet<Integer> linkedSet = new LinkedHashSet<>();
-        linkedSet.add(5);
-        linkedSet.add(15);
-        linkedSet.add(25);
-        System.out.println("\nLinkedHashSet: " + linkedSet);
+			return false;
+		}
 
-        // --- Built-in TreeSet (sorted) ---
-        TreeSet<Integer> treeSet = new TreeSet<>();
-        treeSet.add(25);
-        treeSet.add(5);
-        treeSet.add(15);
-        System.out.println("\nTreeSet (sorted): " + treeSet);
-        System.out.print("Iterate TreeSet: ");
-        Iterator<Integer> it = treeSet.iterator();
-        while (it.hasNext()) System.out.print(it.next() + " ");
-        System.out.println();
-    }
+		public void remove(int key) {
+			int idx = getBucketIndex(key);
+			Node current = bucketArray[idx], prev = null;
+
+			while (current != null) {
+				if (current.key == key) {
+					if (prev == null) {
+						bucketArray[idx] = current.next;
+					} else {
+						prev.next = current.next;
+					}
+					currentSize--;
+					return;
+				}
+				prev = current;
+				current = current.next;
+			}
+		}
+
+		public int size() {
+			return currentSize;
+		}
+	}
+
+	public static void main(String[] args) {
+		// ----------------- Manual Custom HashSet -----------------
+		CustomHashSet customSet = new CustomHashSet(10);
+		customSet.add(10);
+		customSet.add(20);
+		customSet.add(30);
+		System.out.println("Custom Set Size: " + customSet.size());
+		System.out.println("Contains 20? " + customSet.contains(20));
+		customSet.remove(20);
+		System.out.println("After removal, contains 20? " + customSet.contains(20));
+		System.out.println("Custom Set Size: " + customSet.size());
+
+		// ----------------- Built-in HashSet -----------------
+		HashSet<Integer> hashSet = new HashSet<>();
+		hashSet.add(10);
+		hashSet.add(20);
+		hashSet.add(30);
+		System.out.println("\nHashSet: " + hashSet);
+		System.out.println("HashSet contains 30? " + hashSet.contains(30));
+		hashSet.remove(20);
+		System.out.println("HashSet after removing 20: " + hashSet);
+
+		// ----------------- Built-in LinkedHashSet -----------------
+		LinkedHashSet<Integer> linkedSet = new LinkedHashSet<>();
+		linkedSet.add(10);
+		linkedSet.add(20);
+		linkedSet.add(30);
+		System.out.println("\nLinkedHashSet (insertion order): " + linkedSet);
+		System.out.print("LinkedHashSet Iteration: ");
+		for (int val : linkedSet) {
+			System.out.print(val + " ");
+		}
+
+		// ----------------- Built-in TreeSet -----------------
+		TreeSet<Integer> treeSet = new TreeSet<>();
+		treeSet.add(30);
+		treeSet.add(10);
+		treeSet.add(20);
+		System.out.println("\nTreeSet (sorted): " + treeSet);
+		System.out.print("TreeSet Iteration: ");
+		for (int val : treeSet) {
+			System.out.print(val + " ");
+		}
+		System.out.println();
+	}
 }

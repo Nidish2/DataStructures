@@ -4,7 +4,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.PriorityQueue;
 
-public class DD17_MaxHeap {
+public class DD21_MaxHeap {
 
 	// Manual Max-Heap implementation (array-based)
 	private static class MaxHeap {

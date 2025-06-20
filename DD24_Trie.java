@@ -2,7 +2,7 @@ package ds;
 
 import java.util.*;
 
-public class DD22_Trie {
+public class DD24_Trie {
 
 	// Manual Trie Implementation
 	static class TrieNode {

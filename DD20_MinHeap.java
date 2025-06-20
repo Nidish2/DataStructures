@@ -3,7 +3,7 @@ package ds;
 import java.util.Arrays;
 import java.util.PriorityQueue;
 
-public class DD16_MinHeap {
+public class DD20_MinHeap {
 
     // Manual Min-Heap implementation (array-based)
     private static class MinHeap {

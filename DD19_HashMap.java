@@ -4,12 +4,11 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.TreeMap;
-import java.util.Iterator;
 
 public class DD19_HashMap {
 
-	// Manual HashMap using separate chaining
-	private static class MyHashMap {
+	// Manual HashMap Implementation (Separate Chaining)
+	private static class CustomHashMap {
 		private static class Entry {
 			int key;
 			int value;
@@ -21,107 +20,113 @@ public class DD19_HashMap {
 			}
 		}
 
-		private Entry[] buckets;
+		private Entry[] table;
 		private int capacity;
-		private int size;
+		private int currentSize;
 
-		public MyHashMap(int capacity) {
+		public CustomHashMap(int capacity) {
 			this.capacity = capacity;
-			buckets = new Entry[capacity];
-			size = 0;
+			this.table = new Entry[capacity];
+			this.currentSize = 0;
 		}
 
-		private int hash(int key) {
+		private int getBucketIndex(int key) {
 			return Math.abs(key) % capacity;
 		}
 
 		public void put(int key, int value) {
-			int idx = hash(key);
-			Entry head = buckets[idx];
+			int index = getBucketIndex(key);
+			Entry head = table[index];
+
 			for (Entry e = head; e != null; e = e.next) {
 				if (e.key == key) {
 					e.value = value;
 					return;
 				}
 			}
+
 			Entry newEntry = new Entry(key, value);
-			newEntry.next = head;
-			buckets[idx] = newEntry;
-			size++;
+			newEntry.next = table[index];
+			table[index] = newEntry;
+			currentSize++;
 		}
 
 		public Integer get(int key) {
-			int idx = hash(key);
-			for (Entry e = buckets[idx]; e != null; e = e.next) {
-				if (e.key == key)
-					return e.value;
+			int index = getBucketIndex(key);
+			Entry current = table[index];
+
+			while (current != null) {
+				if (current.key == key)
+					return current.value;
+				current = current.next;
 			}
+
 			return null;
 		}
 
 		public void remove(int key) {
-			int idx = hash(key);
-			Entry curr = buckets[idx];
-			Entry prev = null;
-			while (curr != null) {
-				if (curr.key == key) {
+			int index = getBucketIndex(key);
+			Entry current = table[index], prev = null;
+
+			while (current != null) {
+				if (current.key == key) {
 					if (prev == null)
-						buckets[idx] = curr.next;
+						table[index] = current.next;
 					else
-						prev.next = curr.next;
-					size--;
+						prev.next = current.next;
+					currentSize--;
 					return;
 				}
-				prev = curr;
-				curr = curr.next;
+				prev = current;
+				current = current.next;
 			}
 		}
 
 		public int size() {
-			return size;
+			return currentSize;
 		}
 	}
 
 	public static void main(String[] args) {
-		// --- Manual MyHashMap ---
-		MyHashMap manualMap = new MyHashMap(10);
-		manualMap.put(1, 100);
-		manualMap.put(2, 200);
-		manualMap.put(3, 300);
-		System.out.println("Manual size: " + manualMap.size());
-		System.out.println("Get key 2: " + manualMap.get(2));
-		manualMap.put(2, 250);
-		System.out.println("Updated key 2: " + manualMap.get(2));
-		manualMap.remove(3);
-		System.out.println("After remove key 3, get 3: " + manualMap.get(3));
-		System.out.println("Manual size: " + manualMap.size());
+		// ---------------- Manual Custom HashMap ----------------
+		CustomHashMap customMap = new CustomHashMap(10);
+		customMap.put(1, 100);
+		customMap.put(2, 200);
+		customMap.put(3, 300);
+		System.out.println("Custom Map Size: " + customMap.size());
+		System.out.println("Get key 2: " + customMap.get(2));
+		customMap.put(2, 250);
+		System.out.println("Updated key 2: " + customMap.get(2));
+		customMap.remove(3);
+		System.out.println("After remove key 3, get 3: " + customMap.get(3));
+		System.out.println("Custom Map Size: " + customMap.size());
 
-		// --- Built-in HashMap ---
+		// ---------------- In-built HashMap ----------------
 		Map<Integer, Integer> hashMap = new HashMap<>();
 		hashMap.put(1, 100);
 		hashMap.put(2, 200);
 		hashMap.put(3, 300);
 		System.out.println("\nHashMap: " + hashMap);
-		System.out.println("Contains key 2? " + hashMap.containsKey(2));
+		System.out.println("HashMap contains key 2? " + hashMap.containsKey(2));
 		hashMap.put(2, 250);
 		System.out.println("Updated HashMap: " + hashMap);
 		hashMap.remove(3);
-		System.out.println("After remove 3: " + hashMap);
+		System.out.println("After removing key 3: " + hashMap);
 
-		// --- Built-in LinkedHashMap (insertion-order) ---
+		// ---------------- In-built LinkedHashMap ----------------
 		Map<Integer, Integer> linkedMap = new LinkedHashMap<>();
 		linkedMap.put(1, 100);
 		linkedMap.put(2, 200);
 		linkedMap.put(3, 300);
-		System.out.println("\nLinkedHashMap: " + linkedMap);
+		System.out.println("\nLinkedHashMap (Insertion Order): " + linkedMap);
 
-		// --- Built-in TreeMap (sorted by key) ---
+		// ---------------- In-built TreeMap ----------------
 		Map<Integer, Integer> treeMap = new TreeMap<>();
 		treeMap.put(3, 300);
 		treeMap.put(1, 100);
 		treeMap.put(2, 200);
-		System.out.println("\nTreeMap (sorted): " + treeMap);
-		System.out.print("Iterate TreeMap entries: ");
+		System.out.println("\nTreeMap (Sorted by Key): " + treeMap);
+		System.out.print("TreeMap Iteration: ");
 		for (Map.Entry<Integer, Integer> entry : treeMap.entrySet()) {
 			System.out.print("{" + entry.getKey() + ":" + entry.getValue() + "} ");
 		}

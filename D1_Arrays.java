@@ -1,6 +1,8 @@
 package ds;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 
 public class D1_Arrays {
 
@@ -10,10 +12,9 @@ public class D1_Arrays {
 	public D1_Arrays(int capacity) {
 		// TODO Auto-generated constructor stub
 		arr = new int[capacity];
-
 	}
 
-	public void create(int value) {
+	public void insert(int value) {
 		if (size < arr.length) {
 			arr[size++] = value;
 		} else {
@@ -56,12 +57,12 @@ public class D1_Arrays {
 		D1_Arrays arrayOps = new D1_Arrays(5);
 
 		System.out.println("👉 Creating elements...");
-		arrayOps.create(10);
-		arrayOps.create(20);
-		arrayOps.create(30);
-		arrayOps.create(40);
-		arrayOps.create(50);
-		arrayOps.create(60); // Should show array full
+		arrayOps.insert(10);
+		arrayOps.insert(20);
+		arrayOps.insert(30);
+		arrayOps.insert(40);
+		arrayOps.insert(50);
+		arrayOps.insert(60); // Should show array full
 		System.out.println();
 
 		System.out.println("📖 Reading array...");
@@ -83,13 +84,50 @@ public class D1_Arrays {
 		System.out.println();
 
 		System.out.println("✅ Final state of the array:");
-		arrayOps.read();
+
+		// Swap using bitwise XOR
+		int a = 10;
+		int b = 20;
+		System.out.println("\nInitial values: a = " + a + ", b = " + b);
+		a = a ^ b;
+		b = a ^ b;
+		a = a ^ b;
+
+		System.out.println("After swapping with XOR a = " + a + ", b = " + b);
+
+		// Swap using a temporary variable
+		System.out.println("\nInitial values: a = " + a + ", b = " + b);
+		int temp = a;
+		a = b;
+		b = temp;
+
+		System.out.println("After swapping with temp: a = " + a + ", b = " + b);
+
+		// Swap using multiplication and division (not recommended for large numbers)
+		System.out.println("\nInitial values: a = " + a + ", b = " + b);
+		a = 10;
+		b = 20;
+		a = a * b; // a = 200
+		b = a / b; // b = 10
+		a = a / b; // a = 20
+
+		System.out.println("After swapping with multiplication/division: a = " + a + ", b = " + b);
+
+		// Swap using addition and subtraction (not recommended for large numbers)
+		System.out.println("\nInitial values: a = " + a + ", b = " + b);
+		a = 10;
+		b = 20;
+		a = a + b; // a = 30
+		b = a - b; // b = 10
+		a = a - b; // a = 20
+
+		System.out.println("After swapping with addition/subtraction: a = " + a + ", b = " + b);
 
 		// Dynamic Array
 		ArrayList<Integer> dynamicArray = new ArrayList<>();
 
 		// Create
-		System.out.println("👉 Adding elements...");
+		System.out.println("\n👉 Adding elements...");
 		dynamicArray.add(10);
 		dynamicArray.add(20);
 		dynamicArray.add(30);
@@ -124,6 +162,13 @@ public class D1_Arrays {
 		for (int i = 0; i < dynamicArray.size(); i++) {
 			System.out.println("Index " + i + " = " + dynamicArray.get(i));
 		}
+
+		//
+		ArrayList<Integer> list = new ArrayList<>(Arrays.asList(20, 30, 40, 50));
+		System.out.println("\nInitial List: " + list);
+		Collections.swap(list, 0, 2); // swaps 10 and 30
+
+		System.out.println(list);
 
 	}
 }

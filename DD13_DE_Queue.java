@@ -1,113 +1,108 @@
 package ds;
 
+import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.LinkedList;
-import java.util.ArrayDeque;
 
-public class DD12_DE_Queue_DLL {
+public class DD13_DE_Queue {
 
-	// Manual DLL-based Deque
-	private static class DLLDeque {
-		private static class Node {
-			int data;
-			Node prev;
-			Node next;
-
-			Node(int data) {
-				this.data = data;
-			}
-		}
-
-		private Node head; // front
-		private Node tail; // rear
+	// Manual array-based Deque
+	private static class ArrayDequeManual {
+		private int[] arr;
+		private int front;
+		private int rear;
 		private int size;
 
+		public ArrayDequeManual(int capacity) {
+			arr = new int[capacity];
+			front = 0;
+			rear = -1;
+			size = 0;
+		}
+
 		public void addFirst(int data) {
-			Node newNode = new Node(data);
-			if (head == null) {
-				head = tail = newNode;
-			} else {
-				newNode.next = head;
-				head.prev = newNode;
-				head = newNode;
-			}
+			if (size == arr.length)
+				throw new IllegalStateException("Deque overflow");
+			front = (front - 1 + arr.length) % arr.length; //circular decrement (0 - 1 + 5) % 5 = 4
+			arr[front] = data;
 			size++;
 		}
 
 		public void addLast(int data) {
-			Node newNode = new Node(data);
-			if (tail == null) {
-				head = tail = newNode;
-			} else {
-				tail.next = newNode;
-				newNode.prev = tail;
-				tail = newNode;
-			}
+			if (size == arr.length)
+				throw new IllegalStateException("Deque overflow");
+			rear = (rear + 1) % arr.length;
+			arr[rear] = data;
 			size++;
 		}
 
 		public int removeFirst() {
 			if (isEmpty())
 				throw new IllegalStateException("Deque underflow");
-			int val = head.data;
-			if (head == tail) {
-				head = tail = null;
-			} else {
-				head = head.next;
-				head.prev = null;
-			}
+			int value = arr[front];
+			front = (front + 1) % arr.length;
 			size--;
-			return val;
+			return value;
 		}
 
 		public int removeLast() {
 			if (isEmpty())
 				throw new IllegalStateException("Deque underflow");
-			int val = tail.data;
-			if (head == tail) {
-				head = tail = null;
-			} else {
-				tail = tail.prev;
-				tail.next = null;
-			}
+			int value = arr[rear];
+			rear = (rear - 1 + arr.length) % arr.length;
 			size--;
-			return val;
+			return value;
 		}
 
 		public int peekFirst() {
 			if (isEmpty())
 				throw new IllegalStateException("Deque is empty");
-			return head.data;
+			return arr[front];
 		}
 
 		public int peekLast() {
 			if (isEmpty())
 				throw new IllegalStateException("Deque is empty");
-			return tail.data;
+			return arr[rear];
 		}
 
 		public boolean isEmpty() {
-			return head == null;
+			return size == 0;
 		}
 
 		public int size() {
 			return size;
 		}
+
+		public void display() {
+			if (isEmpty()) {
+				System.out.println("Deque is empty");
+				return;
+			}
+			System.out.print("Deque elements: ");
+			for (int i = 0; i < size; i++) {
+				System.out.print(arr[(front + i) % arr.length] + " ");
+			}
+			System.out.println();
+		}
 	}
 
 	public static void main(String[] args) {
-		// --- Manual DLLDeque ---
-		DLLDeque manual = new DLLDeque();
-		manual.addFirst(10);
-		manual.addLast(20);
-		manual.addFirst(5);
-		manual.addLast(30);
-		System.out.println("Manual DLLDeque size: " + manual.size());
+		// --- Manual ArrayDequeManual ---
+		ArrayDequeManual manual = new ArrayDequeManual(5);
+		manual.addLast(10); // Deque: 10
+		manual.addLast(20); // Deque: 10, 20
+		manual.addFirst(5); // Deque: 5, 10, 20
+		manual.addFirst(30); // Deque: 30, 5, 10, 20
+		manual.display();
+		System.out.println("Manual Deque size: " + manual.size());
 		System.out.println("Manual peekFirst: " + manual.peekFirst());
 		System.out.println("Manual peekLast: " + manual.peekLast());
 		System.out.print("Manual removeFirst/removeLast: ");
-		System.out.print(manual.removeFirst() + " "); // 5
-		System.out.print(manual.removeLast() + " "); // 30
+		System.out.print(manual.removeFirst() + " "); // 30
+		System.out.print(manual.removeLast() + " \n"); // 20
+
+		manual.display();
 		System.out.println("\nManual size after removals: " + manual.size());
 
 		// --- Built-in Deque via LinkedList ---

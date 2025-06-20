@@ -12,6 +12,7 @@ public class D3_SLL {
 
 		Node(int data) {
 			this.data = data;
+			next = null;
 		}
 	}
 
@@ -21,9 +22,13 @@ public class D3_SLL {
 	// Insert at the front (head)
 	public void insertAtHead(int data) {
 		Node newNode = new Node(data);
-		newNode.next = head;
-		head = newNode;
 		size++;
+		if (head != null) {
+			newNode.next = head;
+			head = newNode;
+		} else {
+			head = newNode;
+		}
 	}
 
 	// Insert at the end (tail)
@@ -43,9 +48,11 @@ public class D3_SLL {
 	// Insert at a specific position (0‑based)
 	public void insertAtPosition(int data, int pos) {
 		if (pos < 0 || pos > size)
-			throw new IndexOutOfBoundsException();
+			throw new IndexOutOfBoundsException(pos + " is out of bounds for size " + size);
 		if (pos == 0) {
 			insertAtHead(data);
+		} else if (pos == size) {
+			insertAtTail(data);
 		} else {
 			Node newNode = new Node(data);
 			Node curr = head;
@@ -67,8 +74,10 @@ public class D3_SLL {
 
 	// Delete from tail
 	public void deleteAtTail() {
-		if (head == null)
+		if (head == null) {
+			System.out.println("List is empty, nothing to delete.");
 			return;
+		}
 		if (head.next == null) {
 			head = null;
 		} else {
@@ -82,6 +91,8 @@ public class D3_SLL {
 
 	// Delete from specific position
 	public void deleteAtPosition(int pos) {
+		if (head == null)
+			throw new IndexOutOfBoundsException("List is empty, nothing to delete.");
 		if (pos < 0 || pos >= size)
 			throw new IndexOutOfBoundsException();
 		if (pos == 0) {
@@ -144,36 +155,35 @@ public class D3_SLL {
 
 		list.display(); // SLL: 20 -> null
 		System.out.println("Size: " + list.size()); // Size: 1
-		
+
 		// 🎯 Instantiate the built‑in LinkedList
-	    LinkedList<Integer> list1 = new LinkedList<>();
+		LinkedList<Integer> list1 = new LinkedList<>();
 
-	    // ➕ Add elements (head, tail, and at index)
-	    list1.addFirst(10);              // [10]
-	    list1.addLast(20);               // [10, 20]
-	    list1.add(1, 15);                // insert at index 1 → [10, 15, 20]
-	    System.out.println("After adds: " + list1);
+		// ➕ Add elements (head, tail, and at index)
+		list1.addFirst(10); // [10]
+		list1.addLast(20); // [10, 20]
+		list1.add(1, 15); // insert at index 1 → [10, 15, 20]
+		System.out.println("After adds: " + list1);
 
-	    // 🔍 Search / contains
-	    System.out.println("Contains 15? " + list1.contains(15)); // true
-	    System.out.println("Index of 20: " + list1.indexOf(20));  // 2
+		// 🔍 Search / contains
+		System.out.println("Contains 15? " + list1.contains(15)); // true
+		System.out.println("Index of 20: " + list1.indexOf(20)); // 2
 
-	    // 📏 Size
-	    System.out.println("Size: " + list1.size());
+		// 📏 Size
+		System.out.println("Size: " + list1.size());
 
-	    // 🗑️ Remove elements (head, tail, and at index)
-	    int removedHead = list1.removeFirst();    // removes 10
-	    int removedTail = list1.removeLast();     // removes 20
-	    int removedAt1   = list1.remove(0);       // now only one left at idx 0
-	    System.out.printf("Removed: head=%d, tail=%d, at0=%d%n",
-	                      removedHead, removedTail, removedAt1);
+		// 🗑️ Remove elements (head, tail, and at index)
+		int removedHead = list1.removeFirst(); // removes 10
+		int removedTail = list1.removeLast(); // removes 20
+		int removedAt1 = list1.remove(0); // now only one left at idx 0
+		System.out.printf("Removed: head=%d, tail=%d, at0=%d%n", removedHead, removedTail, removedAt1);
 
-	    // ✅ Rebuild and iterate
-	    list1.addAll(Arrays.asList(5, 25, 35, 45));   // [5,25,35,45]
-	    System.out.print("Iterating: ");
-	    for (Integer x : list1) {
-	        System.out.print(x + " -> ");
-	    }
-	    System.out.println("null");
+		// ✅ Rebuild and iterate
+		list1.addAll(Arrays.asList(5, 25, 35, 45)); // [5,25,35,45]
+		System.out.print("Iterating: ");
+		for (Integer x : list1) {
+			System.out.print(x + " -> ");
+		}
+		System.out.println("null");
 	}
 }

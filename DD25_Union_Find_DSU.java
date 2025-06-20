@@ -2,7 +2,7 @@ package ds;
 
 import java.util.*;
 
-public class DD23_Union_Find {
+public class DD25_Union_Find_DSU {
 
 	// Manual Union-Find with Path Compression + Union by Rank
 	static class UnionFind {

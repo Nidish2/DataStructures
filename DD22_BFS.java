@@ -2,7 +2,7 @@ package ds;
 
 import java.util.*;
 
-public class DD20_BFS {
+public class DD22_BFS {
 
 	// Manual Queue using simple array-based implementation
 	private static class ArrayQueue {
