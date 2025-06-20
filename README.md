@@ -1,6 +1,7 @@
 # DataStructures
 
 Welcome to the **DataStructures** repository, a comprehensive collection of Java implementations covering fundamental data structures and their core operations. Whether you’re brushing up on basics, preparing for interviews, or building a foundation for complex algorithms, this repo has you covered.
+This repository covers manual implementations to help understand core data structure logic, along with the usage of built-in methods, classes, and interfaces for quick application in coding interviews and technical placement tests. 
 
 ---
 
