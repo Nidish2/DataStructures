@@ -1,7 +1,6 @@
 # DataStructures
 
 Welcome to the **DataStructures** repository, a comprehensive collection of Java implementations covering fundamental data structures and their core operations. Whether you’re brushing up on basics, preparing for interviews, or building a foundation for complex algorithms, this repo has you covered.
-This repository covers manual implementations to help understand core data structure logic, along with the usage of built-in methods, classes, and interfaces for quick application in coding interviews and technical placement tests. 
 
 ---
 
@@ -92,33 +91,132 @@ DataStructures/
 
 ## 📖 Program Descriptions
 
-> 🎯 **At a Glance:** Browse implementations in sequential order (D1 → DD25) with concise descriptions.
+> 🎯 **At a Glance:** Browse implementations in sequential order (D1 → DD25) with detailed, beginner-friendly descriptions.
 
-* 🔢 **D1\_Arrays.java**: Array operations – traversal, insertion, deletion, searching, and sorting examples.
-* 🗒️ **D2\_String.java**: String utilities – reversal, palindrome checks, substring search, and common manipulations.
-* 📄 **D3\_SLL.java**: Singly Linked List with `insert()`, `delete()`, and traversal using a head pointer.
-* 🔄 **D4\_C\_SLL.java**: Circular Singly Linked List where the last node loops back to head.
-* ↔️ **D5\_DLL.java**: Doubly Linked List supporting bidirectional traversal and updates.
-* 🔄 **D6\_C\_DLL.java**: Circular Doubly Linked List combining DLL features with circular linking.
-* 📚 **D7\_Stack.java**: Stack implemented with an underlying array; covers `push`, `pop`, `peek`, overflow/underflow.
-* 📚 **D8\_Stack\_SLL.java**: Stack built on a Singly Linked List, demonstrating dynamic sizing.
-* 🎒 **D9\_Queue.java**: FIFO Queue implementation using a fixed-size array.
-* 🎒 **DD10\_Queue\_SLL.java**: Queue constructed via singly linked list pointers for dynamic enqueue/dequeue.
-* 🔄 **DD11\_C\_Queue.java**: Array-based Circular Queue optimizing space reuse.
-* 🔄 **DD12\_C\_Queue\_SLL.java**: Circular Queue using linked list nodes in a loop.
-* ↕️ **DD13\_DE\_Queue.java**: Double-Ended Queue (Deque) array version for operations at both ends.
-* ↕️ **DD14\_DE\_Queue\_DLL.java**: Deque implemented with a Doubly Linked List for dynamic resizing.
-* 🌳 **DD15\_BST.java**: Binary Search Tree with `insert()`, `search()`, `delete()`, and traversal methods.
-* ⚖️ **DD16\_AVL.java**: AVL Tree – a self-balancing BST showcasing left/right and LR/RL rotations.
-* 📐 **DD17\_Segment\_T.java**: Segment Tree supporting efficient range sum queries and point updates.
-* 🗝️ **DD18\_HashSet.java**: Simplified HashSet with separate chaining to handle collisions.
-* 📇 **DD19\_HashMap.java**: Custom HashMap featuring key-value storage, resizing, and collision resolution.
-* ⬆️ **DD20\_MinHeap.java**: Min-Heap implementation for priority queue operations.
-* ⬇️ **DD21\_MaxHeap.java**: Max-Heap variant prioritizing larger elements at the top.
-* 🌐 **DD22\_BFS.java**: Breadth-First Search traversal on graph structures using adjacency lists.
-* 🌐 **DD23\_DFS.java**: Depth-First Search traversal on graphs/trees with recursive and stack-based approaches.
-* 🔍 **DD24\_Trie.java**: Trie (prefix tree) with insert, search, and prefix query operations.
-* 🛠️ **DD25\_Union\_Find\_DSU.java**: Disjoint Set Union (Union-Find) with path compression and union by rank.
+---
+
+🔢 **D1\_Arrays.java**
+Covers the basics of array manipulation including creation, traversal, insertion, deletion and differnt techniques of swapping. Great for getting started with static data structures.
+
+---
+
+🗒️ **D2\_String.java**
+Implements common string operations like reversing, checking for palindromes, substring searches, and character frequency. Reinforces concepts like immutability and indexing.
+
+---
+
+📄 **D3\_SLL.java**
+Singly Linked List implementation with support for inserting at head/tail, deleting nodes, and traversing the list. Ideal for understanding dynamic memory and pointers.
+
+---
+
+🔄 **D4\_C\_SLL.java**
+Circular Singly Linked List where the last node connects back to the first, enabling continuous traversal. Useful in queue-based problems and round-robin scheduling.
+
+---
+
+↔️ **D5\_DLL.java**
+Doubly Linked List with forward and backward traversal. Operations include insertion, deletion at any position, and node reversal.
+
+---
+
+🔄 **D6\_C\_DLL.java**
+Circular Doubly Linked List extends DLL with circular connections for bidirectional continuous loops. Useful in media players and buffers.
+
+---
+
+📚 **D7\_Stack.java**
+Classic stack using arrays, implementing `push`, `pop`, `peek`, and size tracking. Demonstrates LIFO behavior and error handling (overflow/underflow).
+
+---
+
+📚 **D8\_Stack\_SLL.java**
+Stack built using singly linked list nodes for dynamic growth, removing fixed size constraints. Includes all standard stack operations.
+
+---
+
+🎒 **D9\_Queue.java**
+Queue using an array with `enqueue`, `dequeue`, and overflow/underflow handling. Introduces FIFO mechanics.
+
+---
+
+🎒 **DD10\_Queue\_SLL.java**
+Linked List-based queue supporting dynamic memory allocation. Useful when queue size isn't known in advance.
+
+---
+
+🔄 **DD11\_C\_Queue.java**
+Circular Queue using arrays to efficiently reuse space. Avoids shifting on deletion, perfect for memory-constrained systems.
+
+---
+
+🔄 **DD12\_C\_Queue\_SLL.java**
+Circular Queue implemented using a linked list to maintain flexibility and circular structure.
+
+---
+
+↕️ **DD13\_DE\_Queue.java**
+Double-ended Queue using arrays, supports insertion/deletion from both ends. Applies in task scheduling and palindrome checking.
+
+---
+
+↕️ **DD14\_DE\_Queue\_DLL.java**
+Deque implemented using doubly linked list for flexible insertion/removal at both ends. Handles large dynamic data efficiently.
+
+---
+
+🌳 **DD15\_BST.java**
+Binary Search Tree with insertion, deletion, and traversal methods like in-order, pre-order, and post-order. Reinforces recursion and tree balancing basics.
+
+---
+
+⚖️ **DD16\_AVL.java**
+Self-balancing BST (AVL Tree) with automatic height balancing via rotations (LL, RR, LR, RL). Ensures O(log n) operations.
+
+---
+
+📐 **DD17\_Segment\_T.java**
+Segment Tree structure for fast range sum queries and point updates. Very useful for range query-based problems in competitive programming.
+
+---
+
+🗝️ **DD18\_HashSet.java**
+Custom HashSet with separate chaining to handle hash collisions. Demonstrates hashing, buckets, and uniqueness.
+
+---
+
+📇 **DD19\_HashMap.java**
+Implements a custom HashMap supporting insertion, retrieval, deletion, and resizing. Key-value store with internal hash function logic.
+
+---
+
+⬆️ **DD20\_MinHeap.java**
+Binary Min-Heap ensuring the smallest element is always at the top. Used in priority queues and scheduling.
+
+---
+
+⬇️ **DD21\_MaxHeap.java**
+Max-Heap variant where the largest element is maintained at the root. Useful for leaderboard and max-priority tasks.
+
+---
+
+🌐 **DD22\_BFS.java**
+Breadth-First Search implementation for graphs using adjacency lists. Illustrates shortest path traversal layer-by-layer.
+
+---
+
+🌐 **DD23\_DFS.java**
+Depth-First Search using recursion and explicit stack. Useful in maze solving, topological sort, and cycle detection.
+
+---
+
+🔍 **DD24\_Trie.java**
+Trie or prefix tree that enables fast prefix-based string matching and autocomplete systems. Covers insert and search operations.
+
+---
+
+🛠️ **DD25\_Union\_Find\_DSU.java**
+Disjoint Set Union with union by rank and path compression. Essential for graph components, Kruskal’s MST, and dynamic connectivity.
 
 ---
 
