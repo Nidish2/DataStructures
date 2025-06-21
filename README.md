@@ -96,7 +96,7 @@ DataStructures/
 ---
 
 🔢 **D1\_Arrays.java**
-Covers the basics of array manipulation including creation, traversal, insertion, deletion and differnt techniques of swapping. Great for getting started with static data structures.
+Covers the basics of array manipulation including creation, traversal, insertion, deletion and different techniques of swapping. Great for getting started with static data structures.
 
 ---
 
