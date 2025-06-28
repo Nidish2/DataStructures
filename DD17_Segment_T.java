@@ -5,7 +5,8 @@ import java.util.TreeMap;
 
 public class DD17_Segment_T {
 
-	// Classical Segment Tree with Lazy Propagation for Range Sum Queries
+	// Classical Segment Tree with Lazy Propagation for Range Sum(or Min, Max, Avg)
+	// Queries
 	private static class SegmentTree {
 		private int[] tree, lazy;
 		private int size;
@@ -21,7 +22,7 @@ public class DD17_Segment_T {
 			if (start == end) {
 				tree[node] = input[start];
 			} else {
-				int mid = (start + end) / 2;
+				int mid = start + (end - start) / 2;
 				build(input, 2 * node, start, mid);
 				build(input, 2 * node + 1, mid + 1, end);
 				tree[node] = tree[2 * node] + tree[2 * node + 1];
@@ -64,7 +65,7 @@ public class DD17_Segment_T {
 		}
 
 		// Single index point update
-		public void update(int index, int newValue) {
+		public void pointUpdate(int index, int newValue) {
 			pointUpdateUtil(1, 0, size - 1, index, newValue);
 		}
 
@@ -96,7 +97,7 @@ public class DD17_Segment_T {
 			if (l <= start && end <= r)
 				return tree[node]; // complete overlap
 
-			int mid = (start + end) / 2;
+			int mid = start + (end - start) / 2;
 			int leftSum = queryUtil(2 * node, start, mid, l, r);
 			int rightSum = queryUtil(2 * node + 1, mid + 1, end, l, r);
 			return leftSum + rightSum;
@@ -106,15 +107,15 @@ public class DD17_Segment_T {
 	public static void main(String[] args) {
 		// ------------ Manual Segment Tree With Lazy Propagation ------------
 		int[] arr = { 1, 3, 5, 7, 9, 11 };
-		SegmentTree segmentTree = new SegmentTree(arr);
+		SegmentTree sT = new SegmentTree(arr);
 
-		System.out.println("Range Sum [1, 4]: " + segmentTree.getRangeSum(1, 4)); // 24
+		System.out.println("Range Sum [1, 4]: " + sT.getRangeSum(1, 4)); // 24
 
-		segmentTree.update(3, 10); // Update index 3 with value 10
-		System.out.println("After point update, Range Sum [1, 4]: " + segmentTree.getRangeSum(1, 4)); // 27
+		sT.pointUpdate(3, 10); // Update index 3 with value 10
+		System.out.println("After point update, Range Sum [1, 4]: " + sT.getRangeSum(1, 4)); // 27
 
-		segmentTree.rangeUpdate(2, 5, 2); // Add +2 to range [2, 5]
-		System.out.println("After range update (+2), Range Sum [1, 4]: " + segmentTree.getRangeSum(1, 4)); // 35
+		sT.rangeUpdate(2, 5, 2); // Add +2 to range [2, 5]
+		System.out.println("After range update (+2), Range Sum [1, 4]: " + sT.getRangeSum(1, 4)); // 35
 
 		// ------------ Built-in TreeMap Simulation for Comparison ------------
 		NavigableMap<Integer, Integer> map = new TreeMap<>();

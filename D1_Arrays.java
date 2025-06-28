@@ -86,13 +86,16 @@ public class D1_Arrays {
 		System.out.println("✅ Final state of the array:");
 
 		// Swap using bitwise XOR
+		// --- Case 1: XOR swap with same index ---
+		// swapping same index causes error, 20 ^ 20 = 0, so it will store 0 instead of
+		// 20
 		int a = 10;
 		int b = 20;
 		System.out.println("\nInitial values: a = " + a + ", b = " + b);
 		a = a ^ b;
 		b = a ^ b;
 		a = a ^ b;
-
+		System.out.println("In XOR Swap, we cannot with same index ");
 		System.out.println("After swapping with XOR a = " + a + ", b = " + b);
 
 		// Swap using a temporary variable

@@ -4,7 +4,7 @@ import java.util.*;
 
 public class DD22_BFS {
 
-	// Manual Queue using simple array-based implementation
+	// ---------------- Manual Circular Queue ----------------
 	private static class ArrayQueue {
 		private int[] arr;
 		private int head = 0, tail = 0, size = 0;
@@ -35,7 +35,7 @@ public class DD22_BFS {
 		}
 	}
 
-	// Manual Graph with BFS using ArrayQueue
+	// ---------------- Manual Graph & BFS ----------------
 	private static class GraphManual {
 		private int V;
 		private List<Integer>[] adj;
@@ -43,7 +43,7 @@ public class DD22_BFS {
 		@SuppressWarnings("unchecked")
 		public GraphManual(int V) {
 			this.V = V;
-			adj = new List[V];
+			adj = new ArrayList[V];
 			for (int i = 0; i < V; i++)
 				adj[i] = new ArrayList<>();
 		}
@@ -55,60 +55,99 @@ public class DD22_BFS {
 
 		public void bfs(int start) {
 			boolean[] visited = new boolean[V];
-			ArrayQueue q = new ArrayQueue(V);
+			ArrayQueue queue = new ArrayQueue(V); // doubled capacity for safety
 			visited[start] = true;
-			q.enqueue(start);
+			queue.enqueue(start);
+
 			System.out.print("Manual BFS: ");
-			while (!q.isEmpty()) {
-				int u = q.dequeue();
+			while (!queue.isEmpty()) {
+				int u = queue.dequeue();
 				System.out.print(u + " ");
 				for (int nbr : adj[u]) {
 					if (!visited[nbr]) {
 						visited[nbr] = true;
-						q.enqueue(nbr);
+						queue.enqueue(nbr);
+					}
+				}
+			}
+			System.out.println("\n");
+		}
+
+		@Override
+		public String toString() {
+			StringBuilder sb = new StringBuilder("Graph (Manual):\n");
+			for (int i = 0; i < V; i++) {
+				sb.append(i).append(" -> ").append(adj[i]).append("\n");
+			}
+			return sb.toString();
+		}
+	}
+
+	// ---------------- Built-in Graph & BFS ----------------
+	private static class GraphBuiltIn {
+		private Map<Integer, List<Integer>> adj;
+
+		public GraphBuiltIn(int V) {
+			adj = new HashMap<>();
+			for (int i = 0; i < V; i++)
+				adj.put(i, new ArrayList<>());
+		}
+
+		public void addEdge(int u, int v) {
+			adj.get(u).add(v);
+			adj.get(v).add(u);
+		}
+
+		public void bfs(int start) {
+			boolean[] visited = new boolean[adj.size()];
+			Deque<Integer> queue = new LinkedList<>();
+			visited[start] = true;
+			queue.offer(start);
+
+			System.out.print("Built-in BFS: ");
+			while (!queue.isEmpty()) {
+				int u = queue.poll();
+				System.out.print(u + " ");
+				for (int nbr : adj.get(u)) {
+					if (!visited[nbr]) {
+						visited[nbr] = true;
+						queue.offer(nbr);
 					}
 				}
 			}
 			System.out.println();
 		}
+
+		@Override
+		public String toString() {
+			StringBuilder sb = new StringBuilder("Graph (Built-in):\n");
+			for (var entry : adj.entrySet()) {
+				sb.append(entry.getKey()).append(" -> ").append(entry.getValue()).append("\n");
+			}
+			return sb.toString();
+		}
 	}
 
+	// ---------------- Main Method ----------------
 	public static void main(String[] args) {
-		// --- Manual BFS ---
-		GraphManual gm = new GraphManual(6);
-		gm.addEdge(0, 1);
-		gm.addEdge(0, 2);
-		gm.addEdge(1, 3);
-		gm.addEdge(1, 4);
-		gm.addEdge(2, 5);
-		gm.bfs(0); // expected: 0 1 2 3 4 5
+		// === Manual BFS ===
+		GraphManual manualGraph = new GraphManual(6);
+		manualGraph.addEdge(0, 1);
+		manualGraph.addEdge(0, 2);
+		manualGraph.addEdge(1, 3);
+		manualGraph.addEdge(1, 4);
+		manualGraph.addEdge(2, 5);
+		System.out.println(manualGraph);
+		manualGraph.bfs(0); // Expected: 0 1 2 3 4 5
 
-		// --- Built-in BFS using java.util.Queue ---
-		Map<Integer, List<Integer>> adj = new HashMap<>();
-		for (int i = 0; i < 6; i++)
-			adj.put(i, new ArrayList<>());
-		adj.get(0).addAll(Arrays.asList(1, 2));
-		adj.get(1).addAll(Arrays.asList(0, 3, 4));
-		adj.get(2).addAll(Arrays.asList(0, 5));
-		adj.get(3).add(1);
-		adj.get(4).add(1);
-		adj.get(5).add(2);
-
-		boolean[] visited = new boolean[6];
-		Queue<Integer> queue = new LinkedList<>();
-		visited[0] = true;
-		queue.offer(0);
-		System.out.print("Built-in BFS: ");
-		while (!queue.isEmpty()) {
-			int u = queue.poll();
-			System.out.print(u + " ");
-			for (int nbr : adj.get(u)) {
-				if (!visited[nbr]) {
-					visited[nbr] = true;
-					queue.offer(nbr);
-				}
-			}
-		}
-		System.out.println();
+		// === Built-in BFS ===
+		GraphBuiltIn builtInGraph = new GraphBuiltIn(6);
+		builtInGraph.addEdge(0, 1);
+		builtInGraph.addEdge(0, 2);
+		builtInGraph.addEdge(1, 3);
+		builtInGraph.addEdge(1, 4);
+		builtInGraph.addEdge(2, 5);
+		System.out.println(builtInGraph);
+		builtInGraph.bfs(0); // Expected: 0 1 2 3 4 5
 	}
 }

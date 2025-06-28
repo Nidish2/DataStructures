@@ -1,12 +1,18 @@
 package ds;
 
-import java.util.HashSet;
-import java.util.LinkedHashSet;
-import java.util.TreeSet;
+import java.util.*;
 
 public class DD18_HashSet {
 
 	// Manual Implementation of HashSet using Separate Chaining
+
+	/*
+	 * 💡 What is Separate Chaining? 👉 It’s a collision resolution strategy used in
+	 * hash tables. When two keys hash to the same index, separate chaining handles
+	 * this by storing multiple key-value pairs at the same index using a linked
+	 * list (or other structure like a tree or list).
+	 */
+
 	private static class CustomHashSet {
 		private static class Node {
 			int key;
@@ -33,12 +39,12 @@ public class DD18_HashSet {
 
 		public void add(int key) {
 			int idx = getBucketIndex(key);
-			Node head = bucketArray[idx];
+			Node cur = bucketArray[idx];
 
-			while (head != null) {
-				if (head.key == key)
-					return; // key already exists
-				head = head.next;
+			while (cur != null) {
+				if (cur.key == key)
+					return; // duplicate
+				cur = cur.next;
 			}
 
 			Node newNode = new Node(key);
@@ -56,7 +62,6 @@ public class DD18_HashSet {
 					return true;
 				current = current.next;
 			}
-
 			return false;
 		}
 
@@ -79,54 +84,140 @@ public class DD18_HashSet {
 			}
 		}
 
+		public void clear() {
+			Arrays.fill(bucketArray, null);
+			currentSize = 0;
+		}
+
+		public boolean isEmpty() {
+			return currentSize == 0;
+		}
+
 		public int size() {
 			return currentSize;
+		}
+
+		public List<Integer> toList() {
+			List<Integer> result = new ArrayList<>();
+			for (Node bucket : bucketArray) {
+				Node current = bucket;
+				while (current != null) {
+					result.add(current.key);
+					current = current.next;
+				}
+			}
+			return result;
+		}
+
+		public CustomHashSet cloneSet() {
+			CustomHashSet cloned = new CustomHashSet(capacity);
+			for (int val : this.toList()) {
+				cloned.add(val);
+			}
+			return cloned;
+		}
+
+		public boolean equals(CustomHashSet other) {
+			if (this.size() != other.size())
+				return false;
+			for (int val : this.toList()) {
+				if (!other.contains(val))
+					return false;
+			}
+			return true;
+		}
+
+		public CustomHashSet union(CustomHashSet other) {
+			CustomHashSet result = this.cloneSet();
+			for (int val : other.toList()) {
+				result.add(val);
+			}
+			return result;
+		}
+
+		public CustomHashSet intersection(CustomHashSet other) {
+			CustomHashSet result = new CustomHashSet(capacity);
+			for (int val : this.toList()) {
+				if (other.contains(val))
+					result.add(val);
+			}
+			return result;
+		}
+
+		public void printSet() {
+			System.out.println("CustomHashSet: " + this.toList());
 		}
 	}
 
 	public static void main(String[] args) {
-		// ----------------- Manual Custom HashSet -----------------
-		CustomHashSet customSet = new CustomHashSet(10);
-		customSet.add(10);
-		customSet.add(20);
-		customSet.add(30);
-		System.out.println("Custom Set Size: " + customSet.size());
-		System.out.println("Contains 20? " + customSet.contains(20));
-		customSet.remove(20);
-		System.out.println("After removal, contains 20? " + customSet.contains(20));
-		System.out.println("Custom Set Size: " + customSet.size());
+		System.out.println("----------- Manual CustomHashSet -----------");
+		CustomHashSet classicalSet = new CustomHashSet(10);
+		classicalSet.add(10);
+		classicalSet.add(20);
+		classicalSet.add(30);
 
-		// ----------------- Built-in HashSet -----------------
-		HashSet<Integer> hashSet = new HashSet<>();
-		hashSet.add(10);
-		hashSet.add(20);
-		hashSet.add(30);
-		System.out.println("\nHashSet: " + hashSet);
-		System.out.println("HashSet contains 30? " + hashSet.contains(30));
-		hashSet.remove(20);
-		System.out.println("HashSet after removing 20: " + hashSet);
+		classicalSet.printSet();
+		System.out.println("Custom Set Size: " + classicalSet.size());
+		System.out.println("Contains 20? " + classicalSet.contains(20));
+		classicalSet.remove(20);
+		System.out.println("After removal, contains 20? " + classicalSet.contains(20));
+		System.out.println("Custom Set Elements: " + classicalSet.toList());
 
-		// ----------------- Built-in LinkedHashSet -----------------
-		LinkedHashSet<Integer> linkedSet = new LinkedHashSet<>();
-		linkedSet.add(10);
-		linkedSet.add(20);
-		linkedSet.add(30);
-		System.out.println("\nLinkedHashSet (insertion order): " + linkedSet);
-		System.out.print("LinkedHashSet Iteration: ");
-		for (int val : linkedSet) {
-			System.out.print(val + " ");
-		}
+		CustomHashSet anotherSet = new CustomHashSet(10);
+		anotherSet.add(30);
+		anotherSet.add(40);
+		anotherSet.add(10);
 
-		// ----------------- Built-in TreeSet -----------------
-		TreeSet<Integer> treeSet = new TreeSet<>();
-		treeSet.add(30);
-		treeSet.add(10);
-		treeSet.add(20);
-		System.out.println("\nTreeSet (sorted): " + treeSet);
-		System.out.print("TreeSet Iteration: ");
-		for (int val : treeSet) {
-			System.out.print(val + " ");
-		}
-		System.out.println();
+		System.out.println("Union: " + classicalSet.union(anotherSet).toList());
+		System.out.println("Intersection: " + classicalSet.intersection(anotherSet).toList());
+		System.out.println("Sets Equal? " + classicalSet.equals(anotherSet));
+
+		classicalSet.clear();
+		System.out.println("After clear, isEmpty? " + classicalSet.isEmpty());
+
+		System.out.println("\n----------- Built-in HashSet -----------");
+		HashSet<String> techSet = new HashSet<>();
+		techSet.add("Java");
+		techSet.add("Python");
+		techSet.add("C++");
+
+		System.out.println("HashSet: " + techSet);
+		System.out.println("Contains Python? " + techSet.contains("Python"));
+		techSet.remove("Python");
+		System.out.println("After remove: " + techSet);
+		System.out.println("Size: " + techSet.size());
+		System.out.println("Is Empty? " + techSet.isEmpty());
+
+		@SuppressWarnings("unchecked")
+		HashSet<String> clonedSet = (HashSet<String>) techSet.clone();
+		System.out.println("Cloned HashSet: " + clonedSet);
+
+		HashSet<String> backendSet = new HashSet<>();
+		backendSet.add("Java");
+		backendSet.add("Node");
+
+		HashSet<String> union = new HashSet<>(techSet);
+		union.addAll(backendSet);
+
+		HashSet<String> intersection = new HashSet<>(techSet);
+		intersection.retainAll(backendSet);
+
+		System.out.println("Union: " + union);
+		System.out.println("Intersection: " + intersection);
+		System.out.println("Equals backendSet? " + techSet.equals(backendSet));
+
+		System.out.println("\n----------- LinkedHashSet (Order Preserved) -----------");
+		LinkedHashSet<Integer> orderedSet = new LinkedHashSet<>();
+		orderedSet.add(3);
+		orderedSet.add(1);
+		orderedSet.add(2);
+		System.out.println("LinkedHashSet: " + orderedSet);
+
+		System.out.println("\n----------- TreeSet (Sorted Order) -----------");
+		TreeSet<Integer> sortedSet = new TreeSet<>();
+		sortedSet.add(5);
+		sortedSet.add(1);
+		sortedSet.add(3);
+		System.out.println("TreeSet: " + sortedSet);
 	}
 }
