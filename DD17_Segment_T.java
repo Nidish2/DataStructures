@@ -43,10 +43,10 @@ public class DD17_Segment_T {
 
 		// Range update with delta using lazy propagation
 		public void rangeUpdate(int l, int r, int delta) {
-			rangeUpdateUtil(1, 0, size - 1, l, r, delta);
+			rangeUpdate(1, 0, size - 1, l, r, delta);
 		}
 
-		private void rangeUpdateUtil(int node, int start, int end, int l, int r, int delta) {
+		private void rangeUpdate(int node, int start, int end, int l, int r, int delta) {
 			propagate(node, start, end); // push any previous lazy updates
 
 			if (r < start || end < l)
@@ -59,36 +59,36 @@ public class DD17_Segment_T {
 			}
 
 			int mid = (start + end) / 2;
-			rangeUpdateUtil(2 * node, start, mid, l, r, delta);
-			rangeUpdateUtil(2 * node + 1, mid + 1, end, l, r, delta);
+			rangeUpdate(2 * node, start, mid, l, r, delta);
+			rangeUpdate(2 * node + 1, mid + 1, end, l, r, delta);
 			tree[node] = tree[2 * node] + tree[2 * node + 1];
 		}
 
 		// Single index point update
 		public void pointUpdate(int index, int newValue) {
-			pointUpdateUtil(1, 0, size - 1, index, newValue);
+			pointUpdate(1, 0, size - 1, index, newValue);
 		}
 
-		private void pointUpdateUtil(int node, int start, int end, int idx, int value) {
+		private void pointUpdate(int node, int start, int end, int idx, int value) {
 			propagate(node, start, end);
 			if (start == end) {
 				tree[node] = value;
 			} else {
 				int mid = (start + end) / 2;
 				if (idx <= mid)
-					pointUpdateUtil(2 * node, start, mid, idx, value);
+					pointUpdate(2 * node, start, mid, idx, value);
 				else
-					pointUpdateUtil(2 * node + 1, mid + 1, end, idx, value);
+					pointUpdate(2 * node + 1, mid + 1, end, idx, value);
 				tree[node] = tree[2 * node] + tree[2 * node + 1];
 			}
 		}
 
 		// Range sum query
 		public int getRangeSum(int left, int right) {
-			return queryUtil(1, 0, size - 1, left, right);
+			return query(1, 0, size - 1, left, right);
 		}
 
-		private int queryUtil(int node, int start, int end, int l, int r) {
+		private int query(int node, int start, int end, int l, int r) {
 			propagate(node, start, end);
 
 			if (r < start || end < l)
@@ -98,14 +98,15 @@ public class DD17_Segment_T {
 				return tree[node]; // complete overlap
 
 			int mid = start + (end - start) / 2;
-			int leftSum = queryUtil(2 * node, start, mid, l, r);
-			int rightSum = queryUtil(2 * node + 1, mid + 1, end, l, r);
+			int leftSum = query(2 * node, start, mid, l, r);
+			int rightSum = query(2 * node + 1, mid + 1, end, l, r);
 			return leftSum + rightSum;
 		}
 	}
 
 	public static void main(String[] args) {
 		// ------------ Manual Segment Tree With Lazy Propagation ------------
+		System.out.println("Manual Implementation of Segment Tree with Lazy Propagation for Range Sum Queries");
 		int[] arr = { 1, 3, 5, 7, 9, 11 };
 		SegmentTree sT = new SegmentTree(arr);
 
@@ -118,6 +119,7 @@ public class DD17_Segment_T {
 		System.out.println("After range update (+2), Range Sum [1, 4]: " + sT.getRangeSum(1, 4)); // 35
 
 		// ------------ Built-in TreeMap Simulation for Comparison ------------
+		System.out.println("\nUsing Inbuilt TreeMap for Range Sum Queries");
 		NavigableMap<Integer, Integer> map = new TreeMap<>();
 		for (int i = 0; i < arr.length; i++) {
 			map.put(i, arr[i]);

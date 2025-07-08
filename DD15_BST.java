@@ -19,44 +19,44 @@ public class DD15_BST {
 
 	// Insert a key
 	public void insert(int key) {
-		root = insertRecursive(root, key);
+		root = insert(root, key);
 	}
 
-	private TreeNode insertRecursive(TreeNode root, int key) {
+	private TreeNode insert(TreeNode root, int key) {
 		if (root == null)
 			return new TreeNode(key);
 		if (key < root.key)
-			root.left = insertRecursive(root.left, key);
+			root.left = insert(root.left, key);
 		else if (key > root.key)
-			root.right = insertRecursive(root.right, key);
+			root.right = insert(root.right, key);
 		return root;
 	}
 
 	// Search a key
 	public boolean search(int key) {
-		return searchRecursive(root, key);
+		return search(root, key);
 	}
 
-	private boolean searchRecursive(TreeNode node, int key) {
+	private boolean search(TreeNode node, int key) {
 		if (node == null)
 			return false;
 		if (key == node.key)
 			return true;
-		return key < node.key ? searchRecursive(node.left, key) : searchRecursive(node.right, key);
+		return key < node.key ? search(node.left, key) : search(node.right, key);
 	}
 
 	// Delete a key using inorder successor
 	public void deleteSuccessor(int key) {
-		root = deleteRecursiveScccessor(root, key);
+		root = deleteScccessor(root, key);
 	}
 
-	private TreeNode deleteRecursiveScccessor(TreeNode node, int key) {
+	private TreeNode deleteScccessor(TreeNode node, int key) {
 		if (node == null)
 			return null;
 		if (key < node.key)
-			node.left = deleteRecursiveScccessor(node.left, key);
+			node.left = deleteScccessor(node.left, key);
 		else if (key > node.key)
-			node.right = deleteRecursiveScccessor(node.right, key);
+			node.right = deleteScccessor(node.right, key);
 		else {
 			// One or no child
 			if (node.left == null)
@@ -66,23 +66,23 @@ public class DD15_BST {
 
 			// Two children: replace with inorder successor
 			node.key = findMinValue(node.right);
-			node.right = deleteRecursiveScccessor(node.right, node.key);
+			node.right = deleteScccessor(node.right, node.key);
 		}
 		return node;
 	}
 
 	// Delete a key using inorder predecessor
 	public void deletePredecessor(int key) {
-		root = deleteRecursivePredeccessor(root, key);
+		root = deletePredeccessor(root, key);
 	}
 
-	private TreeNode deleteRecursivePredeccessor(TreeNode node, int key) {
+	private TreeNode deletePredeccessor(TreeNode node, int key) {
 		if (node == null)
 			return null;
 		if (key < node.key)
-			node.left = deleteRecursiveScccessor(node.left, key);
+			node.left = deleteScccessor(node.left, key);
 		else if (key > node.key)
-			node.right = deleteRecursiveScccessor(node.right, key);
+			node.right = deleteScccessor(node.right, key);
 		else {
 			// One or no child
 			if (node.left == null)
@@ -92,7 +92,7 @@ public class DD15_BST {
 
 			// Two children: delete the inorder predecessor
 			node.key = findMaxValue(node.left);
-			node.left = deleteRecursivePredeccessor(node.left, node.key);
+			node.left = deletePredeccessor(node.left, node.key);
 		}
 		return node;
 	}
@@ -123,42 +123,42 @@ public class DD15_BST {
 
 	// In-order traversal
 	public void inOrder() {
-		inOrderRecursive(root);
+		inOrder(root);
 		System.out.println();
 	}
 
-	private void inOrderRecursive(TreeNode node) {
+	private void inOrder(TreeNode node) {
 		if (node == null)
 			return;
-		inOrderRecursive(node.left);
+		inOrder(node.left);
 		System.out.print(node.key + " ");
-		inOrderRecursive(node.right);
+		inOrder(node.right);
 	}
 
 	// Optional: preOrder / postOrder for completeness (not required)
 	public void preOrder() {
-		preOrderRecursive(root);
+		preOrder(root);
 		System.out.println();
 	}
 
-	private void preOrderRecursive(TreeNode node) {
+	private void preOrder(TreeNode node) {
 		if (node == null)
 			return;
 		System.out.print(node.key + " ");
-		preOrderRecursive(node.left);
-		preOrderRecursive(node.right);
+		preOrder(node.left);
+		preOrder(node.right);
 	}
 
 	public void postOrder() {
-		postOrderRecursive(root);
+		postOrder(root);
 		System.out.println();
 	}
 
-	private void postOrderRecursive(TreeNode node) {
+	private void postOrder(TreeNode node) {
 		if (node == null)
 			return;
-		postOrderRecursive(node.left);
-		postOrderRecursive(node.right);
+		postOrder(node.left);
+		postOrder(node.right);
 		System.out.print(node.key + " ");
 	}
 

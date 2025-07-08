@@ -59,6 +59,36 @@ public class DD16_AVL {
 		return y;
 	}
 
+	// Balance the tree
+	private TreeNode doBalance(TreeNode node) {
+		if (node == null)
+			return null;
+
+		// Update height
+		node.height = 1 + Math.max(height(node.left), height(node.right));
+
+		int balance = getBalance(node);
+
+		// 4 Cases
+		if (balance > 1 && getBalance(node.left) >= 0) // LL
+			return rightRotate(node);
+
+		if (balance > 1 && getBalance(node.left) < 0) { // LR
+			node.left = leftRotate(node.left);
+			return rightRotate(node);
+		}
+
+		if (balance < -1 && getBalance(node.right) <= 0) // RR
+			return leftRotate(node);
+
+		if (balance < -1 && getBalance(node.right) > 0) { // RL
+			node.right = rightRotate(node.right);
+			return leftRotate(node);
+		}
+
+		return node; // already balanced
+	}
+
 	// Insert into AVL Tree
 	public void insert(int key) {
 		root = insert(root, key);
@@ -80,65 +110,46 @@ public class DD16_AVL {
 		node.height = 1 + Math.max(height(node.left), height(node.right));
 
 		// Balance the node
-		int balance = getBalance(node);
-
-		// 4 Rotation Cases
-		if (balance > 1 && key < node.left.key) // LL
-			return rightRotate(node);
-
-		if (balance < -1 && key > node.right.key) // RR
-			return leftRotate(node);
-
-		if (balance > 1 && key > node.left.key) { // LR
-			node.left = leftRotate(node.left);
-			return rightRotate(node);
-		}
-
-		if (balance < -1 && key < node.right.key) { // RL
-			node.right = rightRotate(node.right);
-			return leftRotate(node);
-		}
-
-		return node;
+		return doBalance(node);
 	}
 
 	// In-order Traversal (sorted order)
-	public void inorder() {
-		inorder(root);
+	public void inOrder() {
+		inOrder(root);
 		System.out.println();
 	}
 
-	private void inorder(TreeNode node) {
+	private void inOrder(TreeNode node) {
 		if (node == null)
 			return;
-		inorder(node.left);
+		inOrder(node.left);
 		System.out.print(node.key + " ");
-		inorder(node.right);
+		inOrder(node.right);
 	}
 
-	public void preorder() {
-		preorder(root);
+	public void preOrder() {
+		preOrder(root);
 		System.out.println();
 	}
 
-	private void preorder(TreeNode node) {
+	private void preOrder(TreeNode node) {
 		if (node == null)
 			return;
 		System.out.print(node.key + " ");
-		preorder(node.left);
-		preorder(node.right);
+		preOrder(node.left);
+		preOrder(node.right);
 	}
 
-	public void postorder() {
-		postorder(root);
+	public void postOrder() {
+		postOrder(root);
 		System.out.println();
 	}
 
-	private void postorder(TreeNode node) {
+	private void postOrder(TreeNode node) {
 		if (node == null)
 			return;
-		postorder(node.left);
-		postorder(node.right);
+		postOrder(node.left);
+		postOrder(node.right);
 		System.out.print(node.key + " ");
 	}
 
@@ -190,22 +201,7 @@ public class DD16_AVL {
 
 		// Update height and balance the tree
 		node.height = 1 + Math.max(height(node.left), height(node.right));
-		int balance = getBalance(node);
-
-		if (balance > 1 && getBalance(node.left) >= 0) // LL Case
-			return rightRotate(node);
-		if (balance > 1 && getBalance(node.left) < 0) { // LR Case
-			node.left = leftRotate(node.left);
-			return rightRotate(node);
-		}
-		if (balance < -1 && getBalance(node.right) <= 0) // RR Case
-			return leftRotate(node);
-		if (balance < -1 && getBalance(node.right) > 0) { // RL Case
-			node.right = rightRotate(node.right);
-			return leftRotate(node);
-		}
-
-		return node;
+		return doBalance(node);
 	}
 
 	// Delete a node from AVL Tree
@@ -240,22 +236,7 @@ public class DD16_AVL {
 
 		// Update height and balance the tree
 		node.height = 1 + Math.max(height(node.left), height(node.right));
-		int balance = getBalance(node);
-
-		if (balance > 1 && getBalance(node.left) >= 0) // LL Case
-			return rightRotate(node);
-		if (balance > 1 && getBalance(node.left) < 0) { // LR Case
-			node.left = leftRotate(node.left);
-			return rightRotate(node);
-		}
-		if (balance < -1 && getBalance(node.right) <= 0) // RR Case
-			return leftRotate(node);
-		if (balance < -1 && getBalance(node.right) > 0) { // RL Case
-			node.right = rightRotate(node.right);
-			return leftRotate(node);
-		}
-
-		return node;
+		return doBalance(node);
 	}
 
 	// Helper function to find the node with maximum value in a subtree
@@ -298,22 +279,22 @@ public class DD16_AVL {
 		for (int key : keys)
 			avlTree.insert(key);
 
-		System.out.print("AVL Tree Inorder (Sorted): ");
-		avlTree.inorder(); // 10 20 25 30 40 50
-		System.out.print("AVL Tree Preorder: ");
-		avlTree.preorder(); // 30 20 10 25 40 50
-		System.out.print("AVL Tree Postorder: ");
-		avlTree.postorder(); // 10 25 20 50 40 30
-		System.out.println("Search for 25: " + avlTree.search(25)); // true
-		System.out.println("Search for 100: " + avlTree.search(100)); // false
+		System.out.print("Manual AVL Tree Inorder (Sorted): ");
+		avlTree.inOrder(); // 10 20 25 30 40 50
+		System.out.print("Manual AVL Tree Preorder: ");
+		avlTree.preOrder(); // 30 20 10 25 40 50
+		System.out.print("Manual AVL Tree Postorder: ");
+		avlTree.postOrder(); // 10 25 20 50 40 30
+		System.out.println("Manual Search for 25: " + avlTree.search(25)); // true
+		System.out.println("Manual Search for 100: " + avlTree.search(100)); // false
 		System.out.println("Min: " + avlTree.getMin()); // 10
 		System.out.println("Max: " + avlTree.getMax()); // 50
 		avlTree.deleteSuccessor(30); // Deletes 30, successor is 40
 		System.out.print("After deleting successor of 30: ");
-		avlTree.inorder(); // 10 20 25 40 50
+		avlTree.inOrder(); // 10 20 25 40 50
 
 		avlTree.deletePredeccessor(30); // Deletes 30, predecessor is 20
-		avlTree.inorder(); // 10 25 40 50
+		avlTree.inOrder(); // 10 25 40 50
 
 		// Note: Java has no built-in AVL, but TreeSet uses a balanced tree (Red-Black
 		// Tree).
@@ -321,7 +302,7 @@ public class DD16_AVL {
 		for (int key : keys)
 			set.add(key);
 
-		System.out.println("TreeSet (RB Tree) Inorder: " + set);
+		System.out.println("Inbuilt TreeSet (RB Tree) Inorder: " + set);
 		System.out.println("Contains 25? " + set.contains(25));
 
 		set.remove(30); // Removes 30, successor is 40}
