@@ -13,67 +13,86 @@ public class DD19_HashMap {
 	 * list (or other structure like a tree or list).
 	 */
 
-	private static class CustomHashMap {
-		private static class Entry {
-			int key;
-			int value;
-			Entry next;
+	private static class CustomHashMap<K, V> {
+		private static class Entry<K, V> {
+			K key;
+			V value;
+			Entry<K, V> next;
 
-			Entry(int key, int value) {
+			Entry(K key, V value) {
 				this.key = key;
 				this.value = value;
 			}
 		}
 
-		private Entry[] table;
-		private int capacity;
-		private int currentSize;
+		private Entry<K, V>[] table;
+		private int capacity; // Initial capacity of the hash table
+		private int currentSize; // Current number of key-value pairs in the hash table
 
+		@SuppressWarnings("unchecked")
 		public CustomHashMap(int capacity) {
 			this.capacity = capacity;
 			this.table = new Entry[capacity];
 			this.currentSize = 0;
 		}
 
-		private int getBucketIndex(int key) {
-			return Math.abs(key) % capacity;
+		private int getBucketIndex(K key) {
+			return Math.abs(key.hashCode()) % capacity;
 		}
 
-		public void put(int key, int value) {
+		public void put(K key, V value) {
 			int index = getBucketIndex(key);
-			Entry head = table[index];
+			Entry<K, V> head = table[index];
 
-			for (Entry e = head; e != null; e = e.next) {
-				if (e.key == key) {
+			for (Entry<K, V> e = head; e != null; e = e.next) {
+				if (e.key.equals(key)) {
+					System.out.println("Key already exists, updating value.");
 					e.value = value;
-					// Key already exists, update value
 					return;
 				}
 			}
 
-			Entry newEntry = new Entry(key, value);
-			newEntry.next = table[index];
+			Entry<K, V> newEntry = new Entry<>(key, value);
+			newEntry.next = head;
 			table[index] = newEntry;
 			currentSize++;
+			if (currentSize / capacity > 2) {
+				rehash();
+			}
 		}
 
-		public Integer get(int key) {
+		@SuppressWarnings("unchecked")
+		private void rehash() {
+			Entry<K, V>[] oldTable = table;
+			capacity *= 2; // Double the capacity
+			table = new Entry[capacity];
+			currentSize = 0; // Reset size for re-insertion
+
+			for (Entry<K, V> head : oldTable) {
+				while (head != null) {
+					put(head.key, head.value); // Re-insert into new table
+					head = head.next;
+				}
+			}
+		}
+
+		public V get(K key) {
 			int index = getBucketIndex(key);
-			Entry current = table[index];
+			Entry<K, V> current = table[index];
 			while (current != null) {
-				if (current.key == key)
+				if (current.key.equals(key))
 					return current.value;
 				current = current.next;
 			}
 			return null;
 		}
 
-		public void remove(int key) {
+		public void remove(K key) {
 			int index = getBucketIndex(key);
-			Entry current = table[index], prev = null;
+			Entry<K, V> current = table[index], prev = null;
 
 			while (current != null) {
-				if (current.key == key) {
+				if (current.key.equals(key)) {
 					if (prev == null)
 						table[index] = current.next;
 					else
@@ -86,7 +105,7 @@ public class DD19_HashMap {
 			}
 		}
 
-		public boolean containsKey(int key) {
+		public boolean containsKey(K key) {
 			return get(key) != null;
 		}
 
@@ -103,9 +122,9 @@ public class DD19_HashMap {
 			return currentSize;
 		}
 
-		public Set<Integer> keySet() {
-			Set<Integer> keys = new HashSet<>();
-			for (Entry e : table) {
+		public Set<K> keySet() {
+			Set<K> keys = new HashSet<>();
+			for (Entry<K, V> e : table) {
 				while (e != null) {
 					keys.add(e.key);
 					e = e.next;
@@ -114,9 +133,9 @@ public class DD19_HashMap {
 			return keys;
 		}
 
-		public List<Integer> values() {
-			List<Integer> vals = new ArrayList<>();
-			for (Entry e : table) {
+		public List<V> values() {
+			List<V> vals = new ArrayList<>();
+			for (Entry<K, V> e : table) {
 				while (e != null) {
 					vals.add(e.value);
 					e = e.next;
@@ -125,9 +144,9 @@ public class DD19_HashMap {
 			return vals;
 		}
 
-		public Map<Integer, Integer> toMap() {
-			Map<Integer, Integer> map = new HashMap<>();
-			for (Entry e : table) {
+		public Map<K, V> toMap() {
+			Map<K, V> map = new HashMap<>();
+			for (Entry<K, V> e : table) {
 				while (e != null) {
 					map.put(e.key, e.value);
 					e = e.next;
@@ -136,13 +155,13 @@ public class DD19_HashMap {
 			return map;
 		}
 
-		public boolean equals(CustomHashMap other) {
+		public boolean equals(CustomHashMap<K, V> other) {
 			return this.toMap().equals(other.toMap());
 		}
 
-		public CustomHashMap cloneMap() {
-			CustomHashMap copy = new CustomHashMap(capacity);
-			for (Entry e : table) {
+		public CustomHashMap<K, V> cloneMap() {
+			CustomHashMap<K, V> copy = new CustomHashMap<>(capacity);
+			for (Entry<K, V> e : table) {
 				while (e != null) {
 					copy.put(e.key, e.value);
 					e = e.next;
@@ -152,40 +171,50 @@ public class DD19_HashMap {
 		}
 
 		public void printMap() {
+			System.out.println("Map: " + this.toMap());
+		}
+
+		@Override
+		public String toString() {
+			StringBuilder sb = new StringBuilder();
 			for (int i = 0; i < capacity; i++) {
-				System.out.print("Bucket " + i + ": ");
-				Entry current = table[i];
+				sb.append("Bucket ").append(i).append(": ");
+				Entry<K, V> current = table[i];
 				while (current != null) {
-					System.out.print("{" + current.key + ":" + current.value + "} ");
+					sb.append("{").append(current.key).append(": ").append(current.value).append("} ");
 					current = current.next;
 				}
-				System.out.println();
+				sb.append("\n");
 			}
+			return sb.toString();
 		}
 	}
 
 	public static void main(String[] args) {
 		System.out.println("----------- Manual CustomHashMap -----------");
-		CustomHashMap classicalMap = new CustomHashMap(10);
-		classicalMap.put(1, 100);
-		classicalMap.put(2, 200);
-		classicalMap.put(3, 300);
-		classicalMap.put(4, 400);
-		classicalMap.put(5, 500);
-		classicalMap.put(6, 600);
-		classicalMap.put(7, 700);
-		classicalMap.put(8, 800);
-		classicalMap.put(9, 900);
-		classicalMap.put(10, 1000);
-		classicalMap.put(11, 1100); // This will cause a collision with key 1
-		classicalMap.put(12, 1200); // This will cause a collision with key 2
-		classicalMap.put(13, 1300); // This will cause a collision with key 3
-		classicalMap.put(14, 1400); // This will cause a collision with key 4
-		classicalMap.put(15, 1500); // This will cause a collision with key 5
+		CustomHashMap<Integer, String> classicalMap = new CustomHashMap<>(10);
+		classicalMap.put(100, "One Hundred");
+		classicalMap.put(2, "two");
+		classicalMap.put(3, "Three");
+		classicalMap.put(4, "Four");
+		classicalMap.put(5, "Five");
+		classicalMap.put(6, "Six");
+		classicalMap.put(7, "Seven");
+		classicalMap.put(8, "Eight");
+		classicalMap.put(9, "Nine");
+		classicalMap.put(10, "Ten");
+		classicalMap.put(11, "Eleven");
+		classicalMap.put(12, "Twelve");
+		classicalMap.put(13, "Thirteen");
+		classicalMap.put(14, "Fourteen");
+		classicalMap.put(15, "Fifteen");
 
+		System.out.println("Map: \n" + classicalMap);
+		classicalMap.printMap();
 		System.out.println("Size: " + classicalMap.size());
 		System.out.println("Get key 2: " + classicalMap.get(2));
-		classicalMap.put(22, 250);
+		classicalMap.put(22, "Twenty Two");
+		classicalMap.put(2, "Two");
 		System.out.println("Updated key 2: " + classicalMap.get(2));
 		classicalMap.remove(3);
 		System.out.println("KeySet: " + classicalMap.keySet());
@@ -194,7 +223,7 @@ public class DD19_HashMap {
 
 		classicalMap.printMap();
 
-		CustomHashMap copyMap = classicalMap.cloneMap();
+		CustomHashMap<Integer, String> copyMap = classicalMap.cloneMap();
 		System.out.println("Cloned equals original? " + copyMap.equals(classicalMap));
 		classicalMap.clear();
 		System.out.println("After clear, isEmpty? " + classicalMap.isEmpty());

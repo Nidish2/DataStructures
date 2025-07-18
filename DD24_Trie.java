@@ -28,26 +28,25 @@ public class DD24_Trie {
 			node.isEndOfWord = true;
 		}
 
-		public boolean search(String word) {
+		private TrieNode traverseToNode(String str) {
 			TrieNode node = root;
-			for (char ch : word.toCharArray()) {
+			for (char ch : str.toCharArray()) {
 				int idx = ch - 'a';
 				if (node.children[idx] == null)
-					return false;
+					return null;
 				node = node.children[idx];
 			}
-			return node.isEndOfWord;
+			return node;
+		}
+
+		public boolean search(String word) {
+			TrieNode node = traverseToNode(word);
+			return node != null && node.isEndOfWord;
 		}
 
 		public boolean startsWith(String prefix) {
-			TrieNode node = root;
-			for (char ch : prefix.toCharArray()) {
-				int idx = ch - 'a';
-				if (node.children[idx] == null)
-					return false;
-				node = node.children[idx];
-			}
-			return true;
+			TrieNode node = traverseToNode(prefix);
+			return node != null;
 		}
 
 		public void delete(String word) {
@@ -82,13 +81,9 @@ public class DD24_Trie {
 
 		public List<String> getSuggestions(String prefix) {
 			List<String> result = new ArrayList<>();
-			TrieNode node = root;
-			for (char ch : prefix.toCharArray()) {
-				int idx = ch - 'a';
-				if (node.children[idx] == null)
-					return result;
-				node = node.children[idx];
-			}
+			TrieNode node = traverseToNode(prefix);
+			if (node == null)
+				return result; // Avoid NPE
 			collectSuggestions(node, new StringBuilder(prefix), result);
 			return result;
 		}
@@ -107,14 +102,8 @@ public class DD24_Trie {
 		}
 
 		public int countWordsWithPrefix(String prefix) {
-			TrieNode node = root;
-			for (char ch : prefix.toCharArray()) {
-				int idx = ch - 'a';
-				if (node.children[idx] == null)
-					return 0;
-				node = node.children[idx];
-			}
-			return countWords(node);
+			TrieNode node = traverseToNode(prefix);
+			return node == null ? 0 : countWords(node);
 		}
 
 		private int countWords(TrieNode node) {

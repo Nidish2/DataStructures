@@ -13,66 +13,89 @@ public class DD18_HashSet {
 	 * list (or other structure like a tree or list).
 	 */
 
-	private static class CustomHashSet {
-		private static class Node {
-			int key;
-			Node next;
+	private static class CustomHashSet<K> {
 
-			Node(int key) {
+		private static class Node<K> {
+			K key;
+			Node<K> next;
+
+			Node(K key) {
 				this.key = key;
 			}
 		}
 
-		private Node[] bucketArray;
-		private int capacity;
-		private int currentSize;
+		private Node<K>[] bucket;
+		private int capacity; // Initial capacity of the hash set
+		private int currentSize; // Current number of elements in the hash set
 
+		@SuppressWarnings("unchecked")
 		public CustomHashSet(int capacity) {
 			this.capacity = capacity;
-			this.bucketArray = new Node[capacity];
+			this.bucket = new Node[capacity]; // 👈 Generic array
 			this.currentSize = 0;
 		}
 
-		private int getBucketIndex(int key) {
-			return Math.abs(key) % capacity;
+		private int getBucketIndex(K key) {
+			return Math.abs(key.hashCode()) % capacity;
 		}
 
-		public void add(int key) {
+		public void add(K key) {
 			int idx = getBucketIndex(key);
-			Node cur = bucketArray[idx];
-
-			while (cur != null) {
-				if (cur.key == key)
-					return; // duplicate
-				cur = cur.next;
-			}
-
-			Node newNode = new Node(key);
-			newNode.next = bucketArray[idx];
-			bucketArray[idx] = newNode;
-			currentSize++;
-		}
-
-		public boolean contains(int key) {
-			int idx = getBucketIndex(key);
-			Node current = bucketArray[idx];
+			Node<K> current = bucket[idx];
 
 			while (current != null) {
-				if (current.key == key)
+				if (current.key.equals(key)) {
+					System.out.println("Key " + key + " already exists in the set.");
+					return; // duplicate
+				}
+				current = current.next;
+			}
+
+			Node<K> newNode = new Node<>(key);
+			newNode.next = bucket[idx];
+			bucket[idx] = newNode;
+			currentSize++;
+			if (currentSize / capacity > 2) {
+				rehash();
+			}
+		}
+
+		@SuppressWarnings("unchecked")
+		private void rehash() {
+			Node<K>[] oldBucket = bucket;
+			capacity *= 2; // Double the capacity
+			bucket = new Node[capacity];
+			currentSize = 0; // Reset current size to 0 for re-insertion
+
+			for (Node<K> node : oldBucket) {
+				Node<K> current = node;
+				while (current != null) {
+					add(current.key); // Re-inserts into the new resized table
+					current = current.next;
+				}
+			}
+		}
+
+		public boolean contains(K key) {
+			int idx = getBucketIndex(key);
+			Node<K> current = bucket[idx];
+
+			while (current != null) {
+				if (current.key.equals(key))
 					return true;
 				current = current.next;
 			}
 			return false;
 		}
 
-		public void remove(int key) {
+		public void remove(K key) {
 			int idx = getBucketIndex(key);
-			Node current = bucketArray[idx], prev = null;
+			Node<K> current = bucket[idx], prev = null;
 
 			while (current != null) {
-				if (current.key == key) {
+				if (current.key.equals(key)) {
 					if (prev == null) {
-						bucketArray[idx] = current.next;
+						bucket[idx] = current.next;
 					} else {
 						prev.next = current.next;
 					}
@@ -85,7 +108,7 @@ public class DD18_HashSet {
 		}
 
 		public void clear() {
-			Arrays.fill(bucketArray, null);
+			Arrays.fill(bucket, null);
 			currentSize = 0;
 		}
 
@@ -97,10 +120,10 @@ public class DD18_HashSet {
 			return currentSize;
 		}
 
-		public List<Integer> toList() {
-			List<Integer> result = new ArrayList<>();
-			for (Node bucket : bucketArray) {
-				Node current = bucket;
+		public List<K> toList() {
+			List<K> result = new ArrayList<>();
+			for (Node<K> node : bucket) {
+				Node<K> current = node;
 				while (current != null) {
 					result.add(current.key);
 					current = current.next;
@@ -109,35 +132,35 @@ public class DD18_HashSet {
 			return result;
 		}
 
-		public CustomHashSet cloneSet() {
-			CustomHashSet cloned = new CustomHashSet(capacity);
-			for (int val : this.toList()) {
+		public CustomHashSet<K> cloneSet() {
+			CustomHashSet<K> cloned = new CustomHashSet<>(capacity);
+			for (K val : this.toList()) {
 				cloned.add(val);
 			}
 			return cloned;
 		}
 
-		public boolean equals(CustomHashSet other) {
+		public boolean equals(CustomHashSet<K> other) {
 			if (this.size() != other.size())
 				return false;
-			for (int val : this.toList()) {
+			for (K val : this.toList()) {
 				if (!other.contains(val))
 					return false;
 			}
 			return true;
 		}
 
-		public CustomHashSet union(CustomHashSet other) {
-			CustomHashSet result = this.cloneSet();
-			for (int val : other.toList()) {
+		public CustomHashSet<K> union(CustomHashSet<K> other) {
+			CustomHashSet<K> result = this.cloneSet();
+			for (K val : other.toList()) {
 				result.add(val);
 			}
 			return result;
 		}
 
-		public CustomHashSet intersection(CustomHashSet other) {
-			CustomHashSet result = new CustomHashSet(capacity);
-			for (int val : this.toList()) {
+		public CustomHashSet<K> intersection(CustomHashSet<K> other) {
+			CustomHashSet<K> result = new CustomHashSet<>(capacity);
+			for (K val : this.toList()) {
 				if (other.contains(val))
 					result.add(val);
 			}
@@ -147,33 +170,68 @@ public class DD18_HashSet {
 		public void printSet() {
 			System.out.println("CustomHashSet: " + this.toList());
 		}
+
+		@Override
+		public String toString() {
+			StringBuilder sb = new StringBuilder();
+			for (int i = 0; i < capacity; i++) {
+				sb.append("Bucket ").append(i).append(": ");
+				Node<K> current = bucket[i];
+				while (current != null) {
+					sb.append("{").append(current.key).append("} ");
+					current = current.next;
+				}
+				sb.append("\n");
+			}
+			return sb.toString();
+		}
 	}
 
 	public static void main(String[] args) {
-		System.out.println("----------- Manual CustomHashSet -----------");
-		CustomHashSet classicalSet = new CustomHashSet(10);
-		classicalSet.add(10);
-		classicalSet.add(20);
-		classicalSet.add(30);
+		System.out.println("----------- Generic Manual CustomHashSet -----------");
 
-		classicalSet.printSet();
-		System.out.println("Custom Set Size: " + classicalSet.size());
-		System.out.println("Contains 20? " + classicalSet.contains(20));
-		classicalSet.remove(20);
-		System.out.println("After removal, contains 20? " + classicalSet.contains(20));
-		System.out.println("Custom Set Elements: " + classicalSet.toList());
+		CustomHashSet<Integer> set = new CustomHashSet<>(10);
+		set.add(10);
+		set.add(20);
+		set.add(30);
+		set.add(20); // Duplicate, should not be added again
+		set.add(40);
+		set.add(50);
+		set.add(61);
+		set.add(72);
+		set.add(103); // Should trigger rehashing if needed
+		set.add(84);
+		set.add(95);
+		set.add(106);
+		set.add(117); // Should trigger rehashing if needed
+		set.add(125); // Should trigger rehashing if needed
+		set.add(138); // Should trigger rehashing if needed
+		set.add(149); // Should trigger rehashing if needed
 
-		CustomHashSet anotherSet = new CustomHashSet(10);
+		System.out.println("Custom Set Elements: \n" + set);
+
+		set.printSet();
+		System.out.println("Custom Set Size: " + set.size());
+		System.out.println("Contains 20? " + set.contains(20));
+		set.remove(20);
+		System.out.println("After removal, contains 20? " + set.contains(20));
+		System.out.println("Set Size after removal: " + set.size());
+
+		System.out.println("Custom Set Elements: \n" + set);
+		System.out.println("Custom Set Elements: " + set.toList());
+
+		CustomHashSet<Integer> anotherSet = new CustomHashSet<>(10);
 		anotherSet.add(30);
 		anotherSet.add(40);
 		anotherSet.add(10);
 
-		System.out.println("Union: " + classicalSet.union(anotherSet).toList());
-		System.out.println("Intersection: " + classicalSet.intersection(anotherSet).toList());
-		System.out.println("Sets Equal? " + classicalSet.equals(anotherSet));
+		System.out.println("Union: " + set.union(anotherSet).toList());
+		System.out.println("After Union: \n" + set);
+		System.out.println("Intersection: " + set.intersection(anotherSet).toList());
+		System.out.println("Sets Equal? " + set.equals(anotherSet));
 
-		classicalSet.clear();
-		System.out.println("After clear, isEmpty? " + classicalSet.isEmpty());
+		set.clear();
+		System.out.println("After clear, isEmpty? " + set.isEmpty());
 
 		System.out.println("\n----------- Built-in HashSet -----------");
 		HashSet<String> techSet = new HashSet<>();

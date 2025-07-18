@@ -1,6 +1,8 @@
 package ds;
 
+import java.util.Deque;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.TreeSet;
 
 public class DD15_BST {
@@ -47,16 +49,16 @@ public class DD15_BST {
 
 	// Delete a key using inorder successor
 	public void deleteSuccessor(int key) {
-		root = deleteScccessor(root, key);
+		root = deleteSuccessor(root, key);
 	}
 
-	private TreeNode deleteScccessor(TreeNode node, int key) {
+	private TreeNode deleteSuccessor(TreeNode node, int key) {
 		if (node == null)
 			return null;
 		if (key < node.key)
-			node.left = deleteScccessor(node.left, key);
+			node.left = deleteSuccessor(node.left, key);
 		else if (key > node.key)
-			node.right = deleteScccessor(node.right, key);
+			node.right = deleteSuccessor(node.right, key);
 		else {
 			// One or no child
 			if (node.left == null)
@@ -66,23 +68,23 @@ public class DD15_BST {
 
 			// Two children: replace with inorder successor
 			node.key = findMinValue(node.right);
-			node.right = deleteScccessor(node.right, node.key);
+			node.right = deleteSuccessor(node.right, node.key);
 		}
 		return node;
 	}
 
 	// Delete a key using inorder predecessor
 	public void deletePredecessor(int key) {
-		root = deletePredeccessor(root, key);
+		root = deletePredecessor(root, key);
 	}
 
-	private TreeNode deletePredeccessor(TreeNode node, int key) {
+	private TreeNode deletePredecessor(TreeNode node, int key) {
 		if (node == null)
 			return null;
 		if (key < node.key)
-			node.left = deleteScccessor(node.left, key);
+			node.left = deleteSuccessor(node.left, key);
 		else if (key > node.key)
-			node.right = deleteScccessor(node.right, key);
+			node.right = deleteSuccessor(node.right, key);
 		else {
 			// One or no child
 			if (node.left == null)
@@ -92,15 +94,9 @@ public class DD15_BST {
 
 			// Two children: delete the inorder predecessor
 			node.key = findMaxValue(node.left);
-			node.left = deletePredeccessor(node.left, node.key);
+			node.left = deletePredecessor(node.left, node.key);
 		}
 		return node;
-	}
-
-	private int findMinValue(TreeNode node) {
-		while (node.left != null)
-			node = node.left;
-		return node.key;
 	}
 
 	public int findMinValue() {
@@ -109,9 +105,9 @@ public class DD15_BST {
 		return findMinValue(root);
 	}
 
-	private int findMaxValue(TreeNode node) {
-		while (node.right != null)
-			node = node.right;
+	private int findMinValue(TreeNode node) {
+		while (node.left != null)
+			node = node.left;
 		return node.key;
 	}
 
@@ -119,6 +115,12 @@ public class DD15_BST {
 		if (root == null)
 			throw new IllegalStateException("Tree is empty");
 		return findMaxValue(root);
+	}
+
+	private int findMaxValue(TreeNode node) {
+		while (node.right != null)
+			node = node.right;
+		return node.key;
 	}
 
 	// In-order traversal
@@ -135,7 +137,7 @@ public class DD15_BST {
 		inOrder(node.right);
 	}
 
-	// Optional: preOrder / postOrder for completeness (not required)
+	// Pre-order is also known as DFS (Depth First Search)
 	public void preOrder() {
 		preOrder(root);
 		System.out.println();
@@ -162,6 +164,23 @@ public class DD15_BST {
 		System.out.print(node.key + " ");
 	}
 
+	// Level-order traversal (BFS)
+	public void bfs() {
+		if (root == null)
+			return;
+		Deque<TreeNode> q = new LinkedList<>();
+		q.add(root);
+		while (!q.isEmpty()) {
+			TreeNode node = q.poll();
+			System.out.print(node.key + " ");
+			if (node.left != null)
+				q.add(node.left);
+			if (node.right != null)
+				q.add(node.right);
+		}
+		System.out.println();
+	}
+
 	public static void main(String[] args) {
 		// --- Manual Classical BST ---
 		DD15_BST bst = new DD15_BST();
@@ -171,10 +190,12 @@ public class DD15_BST {
 
 		System.out.print("In-order traversal: ");
 		bst.inOrder(); // 20 30 40 50 60 70 80
-		System.out.print("Pre-order traversal: ");
+		System.out.print("Pre-order / DFS traversal: ");
 		bst.preOrder(); // 50 30 20 40 70 60 80
 		System.out.print("Post-order traversal: ");
 		bst.postOrder(); // 20 40 30 60 80 70 50
+		System.out.print("Level-order traversal (BFS): ");
+		bst.bfs(); // 50 30 70 20 40 60 80
 
 		System.out.println("Search 40? " + bst.search(40)); // true
 		System.out.println("Search 90? " + bst.search(90)); // false
@@ -183,10 +204,12 @@ public class DD15_BST {
 		bst.deletePredecessor(30);
 		System.out.println("In-order after deletions: ");
 		bst.inOrder(); // 40 60 70 80
-		System.out.println("Pre-order after deletions: ");
+		System.out.println("Pre-order (DFS) after deletions: ");
 		bst.preOrder(); // 60 40 70 80
 		System.out.println("Post-order after deletions: ");
 		bst.postOrder(); // 40 80 70 60
+		System.out.println("Level-order (BFS) after deletions: ");
+		bst.bfs(); // 60 40 70 80
 		System.out.println("Min value: " + bst.findMinValue()); // 40
 		System.out.println("Max value: " + bst.findMaxValue()); // 80
 
